@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const plm = require("passport-local-mongoose");
 
 mongoose.connect("mongodb://127.0.0.1//pinterest-lite");
 
@@ -25,5 +26,7 @@ const userSchema = mongoose.Schema({
     default: []
   }
 });
+
+userSchema.plugin(plm);
 
 module.exports = mongoose.model("user", userSchema);
