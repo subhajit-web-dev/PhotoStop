@@ -1,3 +1,22 @@
 <% include ./partials/header.ejs %>
-  
+  <div class="w-full h-screen bg-center bg-cover bg-[url('https://miro.medium.com/v2/resize:fit:1200/1*Nu8dCyByDubPMbCeAPDA6Q.png')] flex items-center justify-center">
+    <div class="w-96 h-auto bg-zinc-100 px-12 py-10 rounded-[10px]">
+      <h1 class="text-3xl tracking-tight font-semibold leading-none text-center">Welcome to Pinterest</h1>
+      <p class="mb-4 text-center tracking-tight">Create new account</p>
+      <form action="">
+        <input class="border-2 rounded-md block mt-2 w-full px-3 py-2" type="email" name="email" placeholder="email">
+        <input class="border-2 rounded-md block mt-2 w-full px-3 py-2" type="text" name="fullname" placeholder="fullname">
+        <input class="border-2 rounded-md block mt-2 w-full px-3 py-2" type="text" name="username" placeholder="username">
+        <input class="border-2 rounded-md block mt-2 w-full px-3 py-2" type="password" name="Password" placeholder="password">
+        <input class="border-2 cursor-pointer rounded-full block mt-2 w-full px-3 py-2 bg-red-600 text-white" type="Submit" value="Register">
+        <p class="text-xs font-medium mt-4 w-2/3 mx-auto text-center">
+          By continuing, you agree to Pinterest's
+          <b>Terms of Service, Privacy policy.</b>
+        </p>
+        <p class="text-xs font-semibold mt-4 mx-auto text-center">
+            Already on Pinterest? <a href="/">Login</a>
+        </p>
+      </form>
+    </div>
+  </div>
 <% include ./partials/footer.ejs %>
