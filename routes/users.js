@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const plm = require("passport-local-mongoose");
 
-mongoose.connect("mongodb://127.0.0.1//pinterest-lite");
+mongoose.connect("mongodb://127.0.0.1:27017/pinterestlite");
 
 const userSchema = mongoose.Schema({
   fullname: {
