@@ -1,0 +1,20 @@
+<% include ./partials/header.ejs %>
+    <div class="w-full min-h-full bg-zinc-800 pt-1 px-11 py-8 text-white">
+        <div class="cards flex flex-wrap gap-10 px-11 mt-10">
+            <% posts.forEach(function(post){ %>
+            <div class="card">
+                
+                <div class="w-44 h-32 bg-zinc-200 rounded-xl overflow-hidden">
+                    <img class="w-full h-full object-cover" 
+                    src="/images/uploads/<%= post.image %>" alt="Naruto">
+                </div>
+                <div>
+                    <p class="text-base w-44 tracking-wider overflow-hidden font-semibold mt-3"><%= post.title %></p>
+                    <p class="text-sm w-44 font-medium opacity-80 text-wrap overflow-hidden"><%= post.user.username %></p>
+                </div>
+                
+            </div>
+            <% }) %>
+        </div>
+    </div>
+<% include ./partials/footer.ejs %>

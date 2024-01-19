@@ -50,6 +50,13 @@ router.post("/createpost", isLoggedIn, upload.single("postimage"), async functio
   res.redirect("/profile");
 });
 
+router.get("/feed", isLoggedIn, async function(req, res){
+  const user = await userModel.findOne({username: req.session.passport.user});
+  const posts = await postModel.find()
+  .populate("user")
+  res.render("feed",{user, posts, nav: true});
+});
+
 
 router.post("/register", function(req, res){
   const data = new userModel({
