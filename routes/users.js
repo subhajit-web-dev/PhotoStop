@@ -21,6 +21,9 @@ const userSchema = mongoose.Schema({
   password: {
     type: String
   },
+  profileImage: {
+    type: String
+  },
   boards : {
     type: Array,
     default: []
