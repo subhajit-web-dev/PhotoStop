@@ -6,6 +6,7 @@ const passport = require("passport");
 const localStrategy = require("passport-local");
 const upload = require("./multer");
 
+
 passport.use(new localStrategy(userModel.authenticate()));
 
 
@@ -13,9 +14,11 @@ router.get('/', function(req, res) {
   res.render('index', {nav: false});
 });
 
+
 router.get("/register", function(req, res){
   res.render("register", {nav: false});
 });
+
 
 router.get("/profile", isLoggedIn, async function(req, res){
   const user = 
@@ -25,12 +28,14 @@ router.get("/profile", isLoggedIn, async function(req, res){
   res.render("profile", {user, nav: true});
 });
 
+
 router.post("/fileupload", isLoggedIn, upload.single("image"), async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
   user.profileImage = req.file.filename;
   await user.save();
   res.redirect("/profile");
 });
+
 
 router.get("/add", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
@@ -49,6 +54,55 @@ router.post("/createpost", isLoggedIn, upload.single("postimage"), async functio
   await user.save();
   res.redirect("/profile");
 });
+
+
+router.get("/edit", isLoggedIn, async function(req, res){
+  const user = await userModel.findOne({username: req.session.passport.user});
+  res.render("edit", {user, nav: true});
+});
+
+router.post("/updateprofile", isLoggedIn, async function(req, res) {
+  try {
+    const filter = { username: req.session.passport.user };
+
+    const user = await userModel.findOne(filter);
+
+    if (!user) {
+      console.error("User not found");
+      res.status(404).send("User not found");
+      return;
+    }
+
+    if (req.body.password) {
+      // If a new password is provided, use setPassword to hash and salt it
+      await user.setPassword(req.body.password);
+
+      // Update other profile information
+      user.fullname = req.body.fullname;
+      user.username = req.body.username;
+
+      // Save the user with the updated information
+      await user.save();
+
+      console.log("Profile updated successfully");
+      res.redirect("/profile");
+    } else {
+      // If no new password provided, update the user without changing the password
+      user.fullname = req.body.fullname;
+      user.username = req.body.username;
+
+      // Save the user with the updated information
+      await user.save();
+
+      console.log("Profile updated successfully");
+      res.redirect("/profile");
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 
 router.get("/feed", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
