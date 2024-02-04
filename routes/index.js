@@ -103,6 +103,40 @@ router.post("/updateprofile", isLoggedIn, async function(req, res) {
   }
 });
 
+router.post("/deleteprofile", isLoggedIn, async function(req, res) {
+  try {
+    // Find the user document based on the username
+    const user = await userModel.findOne({ username: req.session.passport.user });
+
+    if (!user) {
+      // Handle case where the user is not found
+      return res.status(404).send("User not found");
+    }
+
+    // Use the user's _id as the filter for postModel.deleteMany
+    const filter = { user: user._id };
+
+    // Use await with deleteMany since it returns a promise
+    const postResult = await postModel.deleteMany(filter);
+
+    console.log(`${postResult.deletedCount} documents in postModel deleted successfully`);
+
+    // Use await with findByIdAndDelete since it returns a promise
+    const userResult = await userModel.findByIdAndDelete(user._id);
+
+    if (userResult) {
+      console.log(`User document deleted successfully`);
+    } else {
+      console.log(`User document not found`);
+    }
+
+    res.redirect("/register"); 
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 
 router.get("/feed", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
