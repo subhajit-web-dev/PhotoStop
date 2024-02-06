@@ -10,3 +10,11 @@ html, body{
     height: 100%;
     width: 100%;
 }
+
+.error{
+    color: rgb(212, 4, 4);
+    margin: 7px 0;
+    text-align: center;
+    text-transform: capitalize;
+    font-weight: 600;
+}
