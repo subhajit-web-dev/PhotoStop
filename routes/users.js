@@ -24,16 +24,15 @@ const userSchema = mongoose.Schema({
   profileImage: {
     type: String
   },
-  boards : {
-    type: Array,
-    default: []
-  },
   posts: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "post"
     }
-  ]
+  ],
+  secret: {
+    type: String
+  }
 });
 
 userSchema.plugin(plm);

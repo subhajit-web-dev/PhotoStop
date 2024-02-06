@@ -137,6 +137,83 @@ router.post("/deleteprofile", isLoggedIn, async function(req, res) {
   }
 });
 
+router.get("/secretquestion", isLoggedIn, function(req, res){
+  res.render("secretquestion",{nav: false});
+});
+
+router.post("/secretquestion", async function(req, res){
+  const user = await userModel.findOne({username: req.session.passport.user});
+  console.log(user);
+  user.secret = req.body.secret;
+  await user.save();
+  res.redirect("/profile");
+});
+
+router.get("/forgetpassword", async function(req, res){
+  res.render("forgetpassword",{nav: false});
+});
+
+router.post("/forgetpassword", async function(req, res) {
+  const data = await userModel.find({});
+  let userExists = false;
+
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].username === req.body.username) {
+      userExists = true; // Set userExists to true if username exists in the database
+      
+      if (data[i].secret === req.body.secret) {
+        // If username and secret match, redirect to resetpassword page
+        req.flash("user",data[i].username);
+        return res.redirect("/resetpassword");
+      } else {
+        console.log("Wrong answer");
+        return res.status(400).send("Wrong answer"); // Respond with an error message
+      }
+    }
+  }
+  // If the loop completes and no matching username is found, respond accordingly
+  if (!userExists) {
+    console.log("User does not exist");
+    return res.status(400).send("User does not exist");
+  }
+  
+  // This line will only be reached if the loop does not redirect or respond
+  // Redirect to /forgetpassword in case of any unexpected conditions
+  res.redirect("/forgetpassword");
+});
+
+router.get("/resetpassword", function(req, res){
+  res.render("resetpassword",{nav: false});
+});
+
+router.post("/resetpassword", async function(req, res){
+  
+  try {
+
+    const data = await userModel.find({});
+    const currentUser = req.flash("user");
+    
+    for(let i=0; i<data.length; i++){
+      if(currentUser == data[i].username){
+        if (req.body.password) {
+          const user = data[i];
+          await user.setPassword(req.body.password);
+          await user.save();
+          console.log("Password reset successfully");
+          res.redirect("/profile");
+        } else {
+          console.error("New password not provided");
+          res.status(400).send("New password not provided");
+        }
+      }
+    }
+
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 router.get("/feed", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
@@ -156,7 +233,7 @@ router.post("/register", function(req, res){
   userModel.register(data, req.body.password)
   .then(function(){
     passport.authenticate("local")(req, res, function(){
-      res.redirect("/profile");
+      res.redirect("/secretquestion");
     })
   })
 });
