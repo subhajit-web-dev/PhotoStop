@@ -1,17 +1,20 @@
 <% include ./partials/header.ejs %>
-    <div class="w-full min-h-full bg-zinc-800 px-11 py-5 pt-1">
-        <h1 class="text-2xl text-white mt-10">Update profile</h1>
-        <hr class="opacity-70 mt-2">
-        <form action="/updateprofile" method="post">
-            <input class="block w-96 px-4 py-2 border-2 rounded-md mt-10" type="text" placeholder="new fullname" name="fullname">
-            <input class="block w-96 px-4 py-2 border-2 rounded-md mt-3" type="text" placeholder="new username" name="username">
-            <input class="block w-96 px-4 py-2 border-2 rounded-md mt-3" type="password" placeholder="new password" name="password">
-            <input class="block w-96 px-4 py-2 bg-red-700 text-white rounded-md mt-3" type="submit" value="Update">
-        </form>
+    <div class="w-full min-h-full bg-zinc-800 pt-1">
+        <% include ./partials/nav.ejs %>
+            <div class="w-full h-full px-11 py-5">
+                <h1 class="text-2xl text-white mt-10">Update profile</h1>
+                <hr class="opacity-70 mt-2">
+                <form action="/updateprofile" method="post">
+                    <input class="block w-96 px-4 py-2 border-2 rounded-md mt-10" type="text" placeholder="new fullname" name="fullname">
+                    <input class="block w-96 px-4 py-2 border-2 rounded-md mt-3" type="text" placeholder="new username" name="username">
+                    <input class="block w-96 px-4 py-2 border-2 rounded-md mt-3" type="password" placeholder="new password" name="password">
+                    <input class="block w-96 px-4 py-2 bg-red-700 text-white rounded-md mt-3" type="submit" value="Update">
+                </form>
 
-        <form action="/deleteprofile" method="post">
-            <input class="block w-96 px-4 py-2 bg-red-700 text-white rounded-md mt-3" type="submit" value="Delete profile">
-        </form>
+                <form action="/deleteprofile" method="post">
+                    <input class="block w-96 px-4 py-2 bg-red-700 text-white rounded-md mt-3" type="submit" value="Delete profile">
+                </form>
+            </div>
     </div>
 <% include ./partials/footer.ejs %>
 
