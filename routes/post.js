@@ -7,7 +7,17 @@ const postSchema = mongoose.Schema({
   },
   title: String,
   description: String,
-  image: String
+  image: String,
+  likeCount: {
+    type: Number,
+    default: 0
+  },
+  likedUsers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user"
+    }
+  ]
 });
 
 module.exports = mongoose.model("post", postSchema);

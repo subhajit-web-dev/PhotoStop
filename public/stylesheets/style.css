@@ -19,6 +19,19 @@ html, body{
     font-weight: 600;
 }
 
+.like i{
+  transition: .2s;
+}
+
+.like:hover i{
+  color: rgb(245, 63, 63);
+}
+
+.fas{
+  color: rgb(245, 63, 63);
+  transition: .2s;
+}
+
 .container
 {
   padding-top: 3.5rem;

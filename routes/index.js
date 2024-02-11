@@ -5,9 +5,12 @@ const postModel = require("./post");
 const passport = require("passport");
 const localStrategy = require("passport-local");
 const upload = require("./multer");
+const bodyParser = require('body-parser');
 
 
 passport.use(new localStrategy(userModel.authenticate()));
+
+router.use(bodyParser.json());
 
 
 router.get('/', function(req, res) {
@@ -24,7 +27,8 @@ router.get("/profile", isLoggedIn, async function(req, res){
   const user = 
   await userModel
   .findOne({username: req.session.passport.user})
-  .populate("posts")
+  .populate("posts");
+
   res.render("profile", {user, nav: true});
 });
 
@@ -143,7 +147,6 @@ router.get("/secretquestion", isLoggedIn, function(req, res){
 
 router.post("/secretquestion", async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
-  console.log(user);
   user.secret = req.body.secret;
   await user.save();
   res.redirect("/profile");
@@ -214,6 +217,56 @@ router.post("/resetpassword", async function(req, res){
     res.status(500).send("Internal Server Error");
   }
 });
+
+router.get('/getdata', async (req, res) => {
+  try {
+      // Fetch data from MongoDB
+      const data = await postModel.find({});
+
+      // Send data to the frontend
+      res.json(data);
+  } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).json({ error: 'Failed to fetch data' });
+  }
+});
+
+router.post('/updatelikecount', isLoggedIn, async function(req, res) {
+  try {
+    // Extract postId and newLikeCount from the request body
+    const { postId, newLikeCount, currentUser, value } = req.body;
+
+    const post = await postModel.findOne({_id: postId});
+    
+    if (value === true) {
+      // if(!(post.likedUsers.includes(currentUser))){
+         // Update the like count for the post in the database
+        await postModel.findByIdAndUpdate(postId, { likeCount: newLikeCount });
+        post.likedUsers.push(currentUser);
+        await post.save();
+        req.flash("like", "fas");
+      // } 
+    } 
+    
+    else {
+      // Remove currentUser from likedUsers array
+      const index = post.likedUsers.indexOf(currentUser);
+      if (index !== -1) {
+         // Update the like count for the post in the database
+        await postModel.findByIdAndUpdate(postId, { likeCount: newLikeCount });
+        post.likedUsers.splice(index, 1);
+        await post.save();
+      }
+    }
+    
+    console.log('Like count updated successfully for post:', postId);
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Error updating like count:', error);
+    res.status(500).json({ error: 'Failed to update like count' });
+  }
+});
+
 
 router.get("/feed", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
