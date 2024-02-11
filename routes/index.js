@@ -271,7 +271,8 @@ router.post('/updatelikecount', isLoggedIn, async function(req, res) {
 router.get("/feed", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
   const posts = await postModel.find()
-  .populate("user")
+  .populate("user");
+
   res.render("feed",{user, posts, nav: true});
 });
 
