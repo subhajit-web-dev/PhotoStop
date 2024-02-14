@@ -1,7 +1,11 @@
 Pinterest-Lite
 
-Created a lite version of pinterest social media site.
-User can register and login their account and can logout as well.
-Users can post their content and view other user's posts as well.
-User can like and unlike posts.
-User can update their profile by changing username and password as well.
+Developed a social media site with registration, login, and logout and forget password functionality.
+Implemented user authentication for secure access.
+Enabled users to upload posts and add captions and view posts from other users and save them.
+Provided functionality to edit and delete their own posts.
+Implemented like and unlike features for posts.
+Integrated profile update feature for changing username and password.
+Used EJS and Tailwind CSS for frontend design.
+Utilized Node.js and Express.js for backend development.
+MongoDB has been used as the database server.
