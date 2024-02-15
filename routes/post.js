@@ -5,8 +5,7 @@ const postSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "user"
   },
-  title: String,
-  description: String,
+  caption: String,
   image: String,
   likeCount: {
     type: Number,

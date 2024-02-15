@@ -20,16 +20,71 @@ html, body{
 }
 
 .like i{
+  margin-left: 3.5px;
   transition: .2s;
 }
 
 .like:hover i{
   color: rgb(245, 63, 63);
+  cursor: pointer;
 }
 
 .fas{
   color: rgb(245, 63, 63);
   transition: .2s;
+}
+
+.save{
+  margin-right: 3.5px;
+  font-size: large;
+  transition: .2s;
+}
+
+.save:hover{
+  color: rgb(245, 63, 63);
+  cursor: pointer;
+}
+
+.edit{
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  padding: 7px 11px;
+  width: auto;
+  background-color: #b81c1d;
+  color: white;
+  border-radius: 15px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  z-index: 1;
+  opacity: 1; /* Initial opacity */
+  display: none; /* Initially hide the edit button */
+  transition: opacity 0.3s ease; /* Add transition for smooth effect */
+}
+
+.image:hover .edit {
+  display: block; /* Show the edit button when hovering over the image */
+}
+
+.edit:hover {
+  background-color: #8d1515;
+  pointer-events: auto; /* Ensure pointer events are enabled */
+}
+
+.image:hover img {
+  opacity: 0.85; /* Adjust the opacity as needed */
+  box-shadow: 0 0 1px black; /* Add a box shadow on hover */
+}
+
+
+@media only screen and (max-width: 768px) {
+  .edit {
+    padding: 4px 7px; /* Adjust padding */
+    font-size: 0.7rem; /* Adjust font size */
+    border-radius: 15px; /* Adjust border radius */
+  }
 }
 
 .container
@@ -53,12 +108,14 @@ html, body{
   max-width: 100%;
   min-width: 100%;
   border-radius: 10px;
+  cursor: -moz-zoom-in; 
+  cursor: -webkit-zoom-in; 
+  cursor: zoom-in;
 }
 
 
 img:hover {
-  
-  opacity: .85;
+  opacity: .65;
   box-shadow: 0 0 1px black;
 }
 

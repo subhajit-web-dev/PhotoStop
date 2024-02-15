@@ -47,23 +47,25 @@
                     <% user.posts.forEach(function(post){ %>
 
                         <div class="box">
-                            <a href="/images/uploads/<%= post.image %>" data-lightbox="posts" data-title="<%= post.description %>">
-                                <img src="/images/uploads/<%= post.image %>" alt="image">
-                            </a>
-                            <div class="flex justify-between">
-                                <h3 class="text-base tracking-wider font-semibold mt-3"><%= post.title %></h3>
-                                <div class="like">
-
-                                    <% if(post.likedUsers.includes(user._id)){ %>
-                                        <i onclick="like('<%= post._id %>', '<%= user._id %>')" id="like-<%= post._id %>" class="fas fa-regular fa-heart mt-3 text-xl"></i>
-                                    <% } else { %>
-                                        <i onclick="like('<%= post._id %>', '<%= user._id %>')" id="like-<%= post._id %>" class="fa-regular fa-heart mt-3 text-xl"></i>
-                                    <% } %>
-                                    <span id="like-count-<%= post._id %>" class="mt-3 text-lg"><%= post.likeCount %></span>
-                                    
-                                </div>
+                            <div class="image relative">
+                                <p class="edit" onclick="editPost('<%= post._id %>')" >Edit</p>                                
+                                <a href="/images/uploads/<%= post.image %>" data-lightbox="posts" data-title="<%= post.caption %>">
+                                    <img src="/images/uploads/<%= post.image %>" alt="image">             
+                                </a>
                             </div>
-                        </div> 
+                            <div class="flex justify-between mt-1">
+                                <div class="like">
+                                    <% if(post.likedUsers.includes(user._id)){ %>
+                                        <i onclick="like('<%= post._id %>', '<%= user._id %>')" id="like-<%= post._id %>" class="fas fa-regular fa-heart text-xl"></i>
+                                    <% } else { %>
+                                        <i onclick="like('<%= post._id %>', '<%= user._id %>')" id="like-<%= post._id %>" class="fa-regular fa-heart text-xl"></i>
+                                    <% } %>
+                                    <span id="like-count-<%= post._id %>" class="text-lg"><%= post.likeCount %></span>
+                                </div>
+                                <i class="save fa-regular fa-bookmark mt-1"></i>
+                            </div>
+                        </div>
+                        
 
                     <% }) %>
 
@@ -75,6 +77,21 @@
     <script src="/javascripts/lightbox-plus-jquery.js"></script>
 
     <script>    
+
+        // This function sends a GET request to the '/editpost' route with the postId as a query parameter
+        async function editPost(postId) {
+            try {
+               
+                const queryParams = new URLSearchParams();
+                queryParams.append('postId', postId);
+
+                // Redirect to another route with data
+                window.location.href = '/editpost?' + queryParams.toString();
+
+            } catch (error) {
+                console.error(error);
+            }
+        };
 
         async function like(postId, currentUser) {
 

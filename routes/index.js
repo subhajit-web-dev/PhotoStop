@@ -7,7 +7,6 @@ const localStrategy = require("passport-local");
 const upload = require("./multer");
 const bodyParser = require('body-parser');
 
-
 passport.use(new localStrategy(userModel.authenticate()));
 
 router.use(bodyParser.json());
@@ -17,11 +16,9 @@ router.get('/', function(req, res) {
   res.render('index', {nav: false, error: req.flash("error")});
 });
 
-
 router.get("/register", function(req, res){
   res.render("register", {nav: false});
 });
-
 
 router.get("/profile", isLoggedIn, async function(req, res){
   const user = 
@@ -32,14 +29,12 @@ router.get("/profile", isLoggedIn, async function(req, res){
   res.render("profile", {user, nav: true});
 });
 
-
 router.post("/fileupload", isLoggedIn, upload.single("image"), async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
   user.profileImage = req.file.filename;
   await user.save();
   res.redirect("/profile");
 });
-
 
 router.get("/add", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
@@ -50,15 +45,13 @@ router.post("/createpost", isLoggedIn, upload.single("postimage"), async functio
   const user = await userModel.findOne({username: req.session.passport.user});
   const post = await postModel.create({
     user: user._id,
-    title: req.body.title,
-    description: req.body.description,
+    caption: req.body.caption,
     image: req.file.filename
   });
   user.posts.push(post._id);
   await user.save();
   res.redirect("/profile");
 });
-
 
 router.get("/edit", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
@@ -137,6 +130,48 @@ router.post("/deleteprofile", isLoggedIn, async function(req, res) {
     res.redirect("/register"); 
   } catch (err) {
     console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get("/editpost", isLoggedIn, async function(req, res){
+  const postId = req.query.postId; // Access the postId parameter from the query
+  req.flash("postId", postId);
+  console.log(postId);
+  res.render("editpost", { nav: true }); 
+});
+
+router.post("/updatepost", isLoggedIn, async function(req, res) {
+  try {
+    const postId = req.flash("postId"); // Retrieve flashed date
+    const currentId = postId[postId.length-1];
+
+    const post = await postModel.findOne({_id: currentId});
+    post.caption = req.body.caption;
+    await post.save();
+    
+    res.redirect("/profile");    
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.post("/deletepost", isLoggedIn, async function(req, res){
+  try {
+    const postId = req.flash("postId"); // Retrieve flashed date
+    const currentId = postId[postId.length-1];
+
+    await postModel.findByIdAndDelete(currentId);
+    const user = await userModel.findOne({ username: req.session.passport.user });
+    user.posts.pull(currentId);
+    await user.save();
+
+    res.redirect("/profile");   
+    
+  } catch (error) {
+    console.error(error);
     res.status(500).send("Internal Server Error");
   }
 });
@@ -267,7 +302,6 @@ router.post('/updatelikecount', isLoggedIn, async function(req, res) {
   }
 });
 
-
 router.get("/feed", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
   const posts = await postModel.find()
@@ -275,7 +309,6 @@ router.get("/feed", isLoggedIn, async function(req, res){
 
   res.render("feed",{user, posts, nav: true});
 });
-
 
 router.post("/register", function(req, res){
   const data = new userModel({
