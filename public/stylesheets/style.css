@@ -11,6 +11,10 @@ html, body{
     width: 100%;
 }
 
+.nav{
+  gap: 1.5rem;;
+}
+
 .error{
     color: rgb(212, 4, 4);
     margin: 7px 0;
@@ -25,7 +29,7 @@ html, body{
 }
 
 .like:hover i{
-  color: rgb(245, 63, 63);
+  color: rgba(245, 63, 63, 0.918);
   cursor: pointer;
 }
 
@@ -41,7 +45,7 @@ html, body{
 }
 
 .save:hover{
-  color: rgb(245, 63, 63);
+  color: rgba(255, 255, 255, 0.815);
   cursor: pointer;
 }
 

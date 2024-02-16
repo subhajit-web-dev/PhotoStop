@@ -5,29 +5,35 @@
                 <div class="container">
                     <% posts.forEach(function(post){ %>
                         <div class="box">
-                            <div>
-                                <p class="text-sm w-44 font-medium opacity-80 text-wrap overflow-hidden">by: <%= post.user.username %></p>
-                            </div>
-                            <div class="image relative">
-                                <a href="/images/uploads/<%= post.image %>" data-lightbox="posts" data-title="<%= post.caption %>">
-                                    <img src="/images/uploads/<%= post.image %>" class="mt-2" alt="image">
-                                </a>  
-                            </div>  
-                            <div class="flex justify-between">
-                                <div class="like">
-                                    <% if(post.likedUsers.includes(user._id)){ %>
-                                        <i onclick="like('<%= post._id %>', '<%= user._id %>')" id="like-<%= post._id %>" class="fas fa-regular fa-heart mt-2 text-xl"></i>
-                                    <% } else { %>
-                                        <i onclick="like('<%= post._id %>', '<%= user._id %>')" id="like-<%= post._id %>" class="fa-regular fa-heart mt-2 text-xl"></i>
-                                    <% } %>
-                                    <span id="like-count-<%= post._id %>" class="mt-3 text-lg"><%= post.likeCount %></span> 
+                            <% if(user.savedPost.includes(post._id)){ %>
+                                <div>
+                                    <p class="text-sm w-44 font-medium opacity-80 text-wrap overflow-hidden">by: <%= post.user.username %></p>
                                 </div>
+                            <% } %>
+                            <div class="image relative">
                                 <% if(user.savedPost.includes(post._id)){ %>
-                                    <i onclick="savePost('<%= post._id %>', '<%= user._id %>')" id="save-<%= post._id %>" class="save fa-solid fa-bookmark mt-2"></i>
-                                <% } else { %>
-                                    <i onclick="savePost('<%= post._id %>', '<%= user._id %>')" id="save-<%= post._id %>" class="save fa-regular fa-bookmark mt-2"></i>
-                                <% } %>
-                            </div>
+                                    <a href="/images/uploads/<%= post.image %>" data-lightbox="posts" data-title="<%= post.caption %>">
+                                        <img src="/images/uploads/<%= post.image %>" class="mt-2" alt="image">
+                                    </a> 
+                                <% } %> 
+                            </div>  
+                            <% if(user.savedPost.includes(post._id)){ %>
+                                <div class="flex justify-between">
+                                    <div class="like">
+                                        <% if(post.likedUsers.includes(user._id)){ %>
+                                            <i onclick="like('<%= post._id %>', '<%= user._id %>')" id="like-<%= post._id %>" class="fas fa-regular fa-heart mt-2 text-xl"></i>
+                                        <% } else { %>
+                                            <i onclick="like('<%= post._id %>', '<%= user._id %>')" id="like-<%= post._id %>" class="fa-regular fa-heart mt-2 text-xl"></i>
+                                        <% } %>
+                                        <span id="like-count-<%= post._id %>" class="mt-3 text-lg"><%= post.likeCount %></span> 
+                                    </div>
+                                    <% if(user.savedPost.includes(post._id)){ %>
+                                        <i onclick="savePost('<%= post._id %>', '<%= user._id %>')" id="save-<%= post._id %>" class="save fa-solid fa-bookmark mt-2"></i>
+                                    <% } else { %>
+                                        <i onclick="savePost('<%= post._id %>', '<%= user._id %>')" id="save-<%= post._id %>" class="save fa-regular fa-bookmark mt-2"></i>
+                                    <% } %>
+                                </div>
+                            <% } %>
                         </div> 
                     <% }) %>
                 </div>
@@ -39,58 +45,58 @@
     <script>    
         async function savePost(postId, userId){
 
-let btn = document.getElementById("save-" + postId);
+        let btn = document.getElementById("save-" + postId);
 
-var data = await fetchUserData();
-console.log(data);
+        var data = await fetchUserData();
+        console.log(data);
 
-if(data.savedPost.length > 0 && data.savedPost.includes(postId)){
-    btn.classList.remove("fa-solid");
-    btn.classList.add("fa-regular");
-    updateSavedPostInBackend(postId, userId, false);
-}
-else{
-    btn.classList.remove("fa-regular");
-    btn.classList.add("fa-solid");
-    updateSavedPostInBackend(postId, userId, true);
-}
+        if(data.savedPost.length > 0 && data.savedPost.includes(postId)){
+            btn.classList.remove("fa-solid");
+            btn.classList.add("fa-regular");
+            updateSavedPostInBackend(postId, userId, false);
+        }
+        else{
+            btn.classList.remove("fa-regular");
+            btn.classList.add("fa-solid");
+            updateSavedPostInBackend(postId, userId, true);
+        }
 
-};
+        };
 
         async function fetchUserData() {
-try {
-    const response = await fetch('/getuserdata'); // Assuming '/getdata' is the endpoint on your backend server
-    const data = await response.json(); // Parse the response as JSON
-    return data; // Return the fetched data
-} catch (error) {
-    // Handle errors
-    console.error('Error fetching data:', error);
-    throw error; // Re-throw the error to be caught by the caller
-}
-};
+        try {
+            const response = await fetch('/getuserdata'); // Assuming '/getdata' is the endpoint on your backend server
+            const data = await response.json(); // Parse the response as JSON
+            return data; // Return the fetched data
+        } catch (error) {
+            // Handle errors
+            console.error('Error fetching data:', error);
+            throw error; // Re-throw the error to be caught by the caller
+        }
+        };
 
         async function updateSavedPostInBackend(postId, userId, value) {
 try {
-const response = await fetch('/updatesavepost', {
-method: 'POST',
-headers: {
-    'Content-Type': 'application/json'
-},
-body: JSON.stringify({
-    postId: postId,
-    userId: userId,
-    value: value
-})
-});
+    const response = await fetch('/updatesavepost', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            postId: postId,
+            userId: userId,
+            value: value
+        })
+    });
 
-if (!response.ok) {
-throw new Error('Failed to update like count');
-}
+    if (!response.ok) {
+        throw new Error('Failed to update like count');
+    }
 
-const responseData = await response.json();
-console.log('Like count updated successfully for post:', postId);
+    const responseData = await response.json();
+    console.log('Like count updated successfully for post:', postId);
 } catch (error) {
-console.error('Error updating like count:', error);
+    console.error('Error updating like count:', error);
 }
 };
 

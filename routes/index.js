@@ -29,6 +29,14 @@ router.get("/profile", isLoggedIn, async function(req, res){
   res.render("profile", {user, nav: true});
 });
 
+router.get("/feed", isLoggedIn, async function(req, res){
+  const user = await userModel.findOne({username: req.session.passport.user});
+  const posts = await postModel.find()
+  .populate("user");
+
+  res.render("feed",{user, posts, nav: true});
+});
+
 router.post("/fileupload", isLoggedIn, upload.single("image"), async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
   user.profileImage = req.file.filename;
@@ -302,12 +310,52 @@ router.post('/updatelikecount', isLoggedIn, async function(req, res) {
   }
 });
 
-router.get("/feed", isLoggedIn, async function(req, res){
+router.get("/saved", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
   const posts = await postModel.find()
   .populate("user");
 
-  res.render("feed",{user, posts, nav: true});
+  res.render("saved",{user, posts, nav: true});
+});
+
+router.get('/getuserdata', async (req, res) => {
+  try {
+      // Fetch data from MongoDB
+      const user = await userModel.findOne({username: req.session.passport.user});
+      
+      // Send data to the frontend
+      res.json(user);
+  } catch (error) {
+      console.error('Error fetching data:', error);
+      res.status(500).json({ error: 'Failed to fetch data' });
+  }
+});
+
+router.post('/updatesavepost', isLoggedIn, async function(req, res) {
+  try {
+    // Extract postId and newLikeCount from the request body
+    const { postId, userId, value } = req.body;
+
+    const user = await userModel.findOne({_id: userId});
+    
+    
+    if (value === true) {
+        user.savedPost.push(postId);
+        await user.save();
+    } 
+    
+    else {
+      const index = user.savedPost.indexOf(postId);
+      if (index !== -1) {
+         // Update the like count for the post in the database
+        user.savedPost.splice(index, 1);
+        await user.save();
+      }
+    }
+
+  } catch (error) {
+    console.error(error);
+  }
 });
 
 router.post("/register", function(req, res){

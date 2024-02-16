@@ -9,11 +9,12 @@
                 <div class="profdets mt-8 flex flex-col items-center justify-center">
                     <div class="relative">
                         <span id="uploaddp" class="w-7 h-7 absolute bottom-0 right-0 rounded-full flex items-center justify-center bg-zinc-200">
-                            <i class="ri-pencil-fill text-zinc-800"></i>
+                            <i class="ri-pencil-fill text-zinc-800 cursor-pointer"></i>
                         </span>
-                        <div class="w-32 h-32 border-2	 bg-zinc-200 rounded-full overflow-hidden">
-                            <img class="w-full h-full object-cover " 
-                            src="/images/uploads/<%= user.profileImage %>" alt="profile_image">
+                        <div class="w-32 h-32 border-2 bg-zinc-200 rounded-full overflow-hidden">
+                            <a href="/images/uploads/<%= user.profileImage %>"  data-lightbox="posts">
+                                <img class="w-full h-full object-cover " src="/images/uploads/<%= user.profileImage %>" alt="profile_image">
+                            </a>
                         </div>
                     </div>
                     <h1 class="text-2xl font-semibold mt-2"><%= user.fullname %></h1>
@@ -21,31 +22,9 @@
                     <a href="/edit" class="mt-3 px-5 py-3 text-xs tracking-widest font-semibold bg-zinc-700 rounded-full">Edit profile</a>
                     <a href="/add" class="px-8 py-2 text-sm tracking-widest font-semibold rounded-full bg-red-700 mt-4">New post</a>
                 </div>
-                
-                <!-- old card/gallery code -->
-
-                <!-- <div class="container flex flex-wrap gap-10 px-11 mt-20">
-                    <% user.posts.forEach(function(post){ %>
-                    <div class="card image-container">
-                        
-                        <div class="image w-96 h-80 bg-zinc-200 rounded-xl overflow-hidden">
-                            <img class="zoomable w-full h-full object-cover" 
-                            src="/images/uploads/<%= post.image %>" alt="Naruto">
-                        </div>
-                        <div>
-                            <h3 class="text-base tracking-wider font-semibold mt-3"><%= post.title %></h3>
-                            <p class="w-44 h-auto text-sm font-medium opacity-80 text-wrap overflow-hidden"><%= post.description %></p>
-                        </div>
-                        
-                    </div>
-
-                    <% }) %>
-                </div> -->
 
                 <div class="container">
-
                     <% user.posts.forEach(function(post){ %>
-
                         <div class="box">
                             <div class="image relative">
                                 <p class="edit" onclick="editPost('<%= post._id %>')" >Edit</p>                                
@@ -62,21 +41,78 @@
                                     <% } %>
                                     <span id="like-count-<%= post._id %>" class="text-lg"><%= post.likeCount %></span>
                                 </div>
-                                <i class="save fa-regular fa-bookmark mt-1"></i>
+                                <% if(user.savedPost.includes(post._id)){ %>
+                                    <i onclick="savePost('<%= post._id %>', '<%= user._id %>')" id="save-<%= post._id %>" class="save fa-solid fa-bookmark mt-2"></i>
+                                <% } else { %>
+                                    <i onclick="savePost('<%= post._id %>', '<%= user._id %>')" id="save-<%= post._id %>" class="save fa-regular fa-bookmark mt-2"></i>
+                                <% } %>
                             </div>
                         </div>
-                        
-
                     <% }) %>
-
                 </div>    
-
             </div>
     </div>
 
     <script src="/javascripts/lightbox-plus-jquery.js"></script>
 
     <script>    
+
+        async function savePost(postId, userId){
+
+            let btn = document.getElementById("save-" + postId);
+
+            var data = await fetchUserData();
+            console.log(data);
+
+            if(data.savedPost.length > 0 && data.savedPost.includes(postId)){
+                btn.classList.remove("fa-solid");
+                btn.classList.add("fa-regular");
+                updateSavedPostInBackend(postId, userId, false);
+            }
+            else{
+                btn.classList.remove("fa-regular");
+                btn.classList.add("fa-solid");
+                updateSavedPostInBackend(postId, userId, true);
+            }
+
+        };
+
+        async function fetchUserData() {
+            try {
+                const response = await fetch('/getuserdata'); // Assuming '/getdata' is the endpoint on your backend server
+                const data = await response.json(); // Parse the response as JSON
+                return data; // Return the fetched data
+            } catch (error) {
+                // Handle errors
+                console.error('Error fetching data:', error);
+                throw error; // Re-throw the error to be caught by the caller
+            }
+        };
+
+        async function updateSavedPostInBackend(postId, userId, value) {
+            try {
+                const response = await fetch('/updatesavepost', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        postId: postId,
+                        userId: userId,
+                        value: value
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update like count');
+                }
+
+                const responseData = await response.json();
+                console.log('Like count updated successfully for post:', postId);
+            } catch (error) {
+                console.error('Error updating like count:', error);
+            }
+        };
 
         // This function sends a GET request to the '/editpost' route with the postId as a query parameter
         async function editPost(postId) {

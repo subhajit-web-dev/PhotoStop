@@ -30,6 +30,12 @@ const userSchema = mongoose.Schema({
       ref: "post"
     }
   ],
+  savedPost:[
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "post"
+    }
+  ],
   secret: {
     type: String
   }
