@@ -5,8 +5,13 @@
                 <div class="container">
                     <% posts.forEach(function(post){ %>
                         <div class="box">
-                            <div>
-                                <p class="text-sm w-44 font-medium opacity-80 text-wrap overflow-hidden">by: <%= post.user.username %></p>
+                            <div class="profile-image">
+                                <div class="w-8 h-8 border-1 bg-zinc-500 rounded-full overflow-hidden">
+                                    <a href="/images/uploads/<%= post.user.profileImage %>"  data-lightbox="profile-image">
+                                        <img class="w-full h-full object-cover" src="/images/uploads/<%= post.user.profileImage %>" alt="profile_image">
+                                    </a>                                
+                                </div>
+                                <p class="text-base w-44 font-medium opacity-80 text-wrap overflow-hidden"><%= post.user.username %></p>
                             </div>
                             <div class="image relative">
                                 <a href="/images/uploads/<%= post.image %>" data-lightbox="posts" data-title="<%= post.caption %>">
