@@ -7,11 +7,19 @@
                         <div class="box">
                             <% if(user.savedPost.includes(post._id)){ %>
                                 <div class="profile-image">
-                                    <div class="w-8 h-8 border-1 bg-zinc-500 rounded-full overflow-hidden">
-                                        <a href="/images/uploads/<%= post.user.profileImage %>"  data-lightbox="profile-image">
-                                            <img class="w-full h-full object-cover" src="/images/uploads/<%= post.user.profileImage %>" alt="profile_image">
-                                        </a>                                
-                                    </div>
+                                    <% if (!post.user.profileImage){ %>
+                                        <div class="w-8 h-8 border-1 bg-zinc-500 rounded-full overflow-hidden">
+                                            <a href=""  data-lightbox="profile-image">
+                                                <img class="w-full h-full object-cover" src="/images/uploads/DefaultUser.jpg" alt="profile_image">
+                                            </a>                                
+                                        </div>
+                                    <% } else { %>
+                                        <div class="w-8 h-8 border-1 bg-zinc-500 rounded-full overflow-hidden">
+                                            <a href="/images/uploads/<%= post.user.profileImage %>"  data-lightbox="profile-image">
+                                                <img class="w-full h-full object-cover" src="/images/uploads/<%= post.user.profileImage %>" alt="profile_image">
+                                            </a>                                
+                                        </div>
+                                    <% } %>
                                     <p class="text-base w-44 font-medium opacity-80 text-wrap overflow-hidden"><%= post.user.username %></p>
                                 </div>
                             <% } %>
