@@ -38,7 +38,8 @@ const userSchema = mongoose.Schema({
     }
   ],
   secret: {
-    type: String
+    type: String,
+    default: null
   }
 });
 

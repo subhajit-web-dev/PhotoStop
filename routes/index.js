@@ -373,12 +373,22 @@ router.post("/register", function(req, res){
   })
 });
 
-router.post("/login", passport.authenticate("local",{
-  successRedirect: "/profile",
+router.post("/login", passport.authenticate("local", {
   failureRedirect: "/",
-  failureFlash: this
-}), function(req, res){  
+  failureFlash: true
+}), async function(req, res) {
+
+  // Get the username from the request parameters
+  const user = await userModel.findOne({ username: req.body.username });
+
+  if (!user.secret) {
+    res.redirect("/secretquestion");
+  } else {
+    res.redirect("/profile");
+  }
+  
 });
+
 
 router.get("/logout", function(req, res, next){
   req.logout(function(err){
