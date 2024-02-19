@@ -11,7 +11,6 @@ passport.use(new localStrategy(userModel.authenticate()));
 
 router.use(bodyParser.json());
 
-
 router.get('/', function(req, res) {
   res.render('index', {nav: false, error: req.flash("error")});
 });
@@ -358,19 +357,36 @@ router.post('/updatesavepost', isLoggedIn, async function(req, res) {
   }
 });
 
-router.post("/register", function(req, res){
-  const data = new userModel({
-    username: req.body.username,
-    fullname: req.body.fullname,
-    email: req.body.email,
-  });
+router.post("/register", async function(req, res){
+  try {
+    // Check if username already exists
+    const existingUsername = await userModel.findOne({ username: req.body.username });
+    if (existingUsername) {
+      return res.status(400).send('Username already exists');
+    }
 
-  userModel.register(data, req.body.password)
-  .then(function(){
+    // Check if email already exists
+    const existingEmail = await userModel.findOne({ email: req.body.email });
+    if (existingEmail) {
+      return res.status(400).send('Email already exists');
+    }
+
+    // If both username and email are unique, proceed with registration
+    const data = new userModel({
+      username: req.body.username,
+      fullname: req.body.fullname,
+      email: req.body.email,
+    });
+
+    await userModel.register(data, req.body.password);
+    
     passport.authenticate("local")(req, res, function(){
       res.redirect("/secretquestion");
-    })
-  })
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('An error occurred during registration');
+  }
 });
 
 router.post("/login", passport.authenticate("local", {
@@ -388,7 +404,6 @@ router.post("/login", passport.authenticate("local", {
   }
   
 });
-
 
 router.get("/logout", function(req, res, next){
   req.logout(function(err){
