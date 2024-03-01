@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const plm = require("passport-local-mongoose");
 
-mongoose.connect("mongodb://127.0.0.1:27017/pinterestlite");
+mongoose.connect("mongodb+srv://subhajitabc122:Amkn01PskIcMjSpH@photo-stop.beyzcfk.mongodb.net/?retryWrites=true&w=majority&appName=photo-stop");
 
 const userSchema = mongoose.Schema({
   fullname: {
