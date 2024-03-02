@@ -6,7 +6,10 @@ const postSchema = mongoose.Schema({
     ref: "user"
   },
   caption: String,
-  image: String,
+  image: {
+    data: Buffer, // Store binary image data
+    contentType: String // Store mime type of the image
+  },
   likeCount: {
     type: Number,
     default: 0
