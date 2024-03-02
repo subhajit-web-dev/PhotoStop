@@ -50,20 +50,25 @@ router.get("/add", isLoggedIn, async function(req, res){
 
 router.post("/createpost", isLoggedIn, upload.single("postimage"), async function(req, res){
   try {
+    // Check if a file was successfully uploaded
+    if (!req.file) {
+      throw new Error("No file uploaded");
+    }
+
     // Find the user who is creating the post
     const user = await userModel.findOne({ username: req.session.passport.user });
 
-    // Read the uploaded image file
-    const imageBuffer = req.file.filename;
-
-    // Convert the image buffer to a Base64 string
-    const imageData = imageBuffer.toString("base64");
+    // Access the uploaded image data from req.file.buffer
+    const imageData = req.file.buffer;
 
     // Create a new post document with the user's ID, caption, and image data
     const post = await postModel.create({
       user: user._id,
       caption: req.body.caption,
-      image: imageData
+      image: {
+        data: imageData,
+        contentType: req.file.mimetype
+      }
     });
 
     // Update the user's posts array with the new post ID
@@ -76,9 +81,10 @@ router.post("/createpost", isLoggedIn, upload.single("postimage"), async functio
     res.redirect("/profile");
   } catch (error) {
     console.error("Error creating post:", error);
-    res.status(500).send("Error creating post");
+    res.status(500).send("Error creating post: " + error.message);
   }
 });
+
 
 
 router.get("/edit", isLoggedIn, async function(req, res){
