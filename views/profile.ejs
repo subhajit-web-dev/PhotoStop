@@ -35,11 +35,12 @@
                     <% user.posts.forEach(function(post){ %>
                         <div class="box">
                             <div class="image relative">
-                                <p class="edit" onclick="editPost('<%= post._id %>')" >Edit</p>                                
-                                <a href="/images/uploads/<%= post.image %>" data-lightbox="posts" data-title="<%= post.caption %>">
-                                    <img src="/images/uploads/<%= post.image %>" alt="image">             
+                                <p class="edit" onclick="editPost('<%= post._id %>')">Edit</p>
+                                <a href="#" data-lightbox="posts" data-title="<%= post.caption %>">
+                                    <img src="data:<%= post.image.contentType %>;base64,<%= post.image.data.toString('base64') %>" alt="image">
                                 </a>
                             </div>
+                            
                             <div class="flex justify-between mt-1">
                                 <div class="like">
                                     <% if(post.likedUsers.includes(user._id)){ %>
