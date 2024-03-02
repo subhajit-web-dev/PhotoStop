@@ -36,7 +36,7 @@
                         <div class="box">
                             <div class="image relative">
                                 <p class="edit" onclick="editPost('<%= post._id %>')">Edit</p>
-                                <a href="#" data-lightbox="posts" data-title="<%= post.caption %>">
+                                <a href="data:<%= post.image.contentType %>;base64,<%= post.image.data.toString('base64') %>" data-lightbox="posts" data-title="<%= post.caption %>">
                                     <img src="data:<%= post.image.contentType %>;base64,<%= post.image.data.toString('base64') %>" alt="image">
                                 </a>
                             </div>
