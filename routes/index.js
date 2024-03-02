@@ -37,10 +37,24 @@ router.get("/feed", isLoggedIn, async function(req, res){
 });
 
 router.post("/fileupload", isLoggedIn, upload.single("image"), async function(req, res){
-  const user = await userModel.findOne({username: req.session.passport.user});
-  user.profileImage = req.file.filename;
-  await user.save();
-  res.redirect("/profile");
+  try {
+    // Find the user who is uploading the image
+    const user = await userModel.findOne({ username: req.session.passport.user });
+
+    // Access the uploaded image data from req.file.buffer
+    const imageBuffer = req.file.buffer;
+
+    // Update the user's profile image with the image buffer
+    user.profileImage = imageBuffer;
+
+    // Save the updated user object to MongoDB
+    await user.save();
+
+    res.redirect("/profile");
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    res.status(500).send("Error uploading image");
+  }
 });
 
 router.get("/add", isLoggedIn, async function(req, res){
