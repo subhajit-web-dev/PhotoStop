@@ -11,19 +11,13 @@
                         <span id="uploaddp" class="w-7 h-7 absolute bottom-0 right-0 rounded-full flex items-center justify-center bg-zinc-200">
                             <i class="ri-pencil-fill text-zinc-800 cursor-pointer"></i>
                         </span>
-                        <% if (!user.profileImage){ %>
+                        
                             <div class="w-32 h-32 border-2 bg-zinc-200 rounded-full overflow-hidden">
-                                <a href=""  data-lightbox="profile-image">
-                                    <img class="w-full h-full object-cover " src="/images/uploads/DefaultUser.jpg" alt="profile_image">
+                                <a href="data:<%= user.profileImage.contentType %>;base64,<%= user.profileImage.data.toString('base64') %>" data-lightbox="profile-image">
+                                    <img class="w-full h-full object-cover" src="data:<%= user.profileImage.contentType %>;base64,<%= user.profileImage.data.toString('base64') %>" alt="profile_image">
                                 </a>
-                            </div>
-                        <% } else { %>
-                            <div class="w-32 h-32 border-2 bg-zinc-200 rounded-full overflow-hidden">
-                                <a href="/images/uploads/<%= user.profileImage %>"  data-lightbox="profile-image">
-                                    <img class="w-full h-full object-cover " src="/images/uploads/<%= user.profileImage %>" alt="profile_image">
-                                </a>
-                            </div>
-                        <% } %>
+                            </div>                            
+                        
                     </div>
                     <h1 class="text-2xl font-semibold mt-2"><%= user.fullname %></h1>
                     <h3 class="text-lg">@<%= user.username %></h3>
