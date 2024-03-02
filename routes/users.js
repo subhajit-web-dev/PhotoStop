@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema({
   },
   profileImage: {
     data: Buffer, // Store binary image data
-    contentType: String, // Store mime type of the image
+    contentType: String // Store mime type of the image
   },
   posts: [
     {
