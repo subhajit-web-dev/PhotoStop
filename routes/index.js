@@ -45,7 +45,9 @@ router.post("/fileupload", isLoggedIn, upload.single("image"), async function(re
     const imageBuffer = req.file.buffer;
 
     // Update the user's profile image with the image buffer
-    user.profileImage = imageBuffer;
+    user.profileImage.data = imageBuffer;
+
+    user.profileImage.contentType = req.file.mimetype;
 
     // Save the updated user object to MongoDB
     await user.save();
@@ -98,8 +100,6 @@ router.post("/createpost", isLoggedIn, upload.single("postimage"), async functio
     res.status(500).send("Error creating post: " + error.message);
   }
 });
-
-
 
 router.get("/edit", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
