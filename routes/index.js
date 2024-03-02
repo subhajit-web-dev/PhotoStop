@@ -49,12 +49,9 @@ router.post("/fileupload", isLoggedIn, upload.single("image"), async function(re
     // Access the uploaded image data from req.file.buffer
     const imageBuffer = req.file.buffer;
 
-    // Convert the image buffer to a Base64 string
-    const imageData = imageBuffer.toString("base64");
-
-    // Update the user's profile image with the Base64 string
+    // Update the user's profile image with the image buffer and content type
     user.profileImage = {
-      data: imageData,
+      data: imageBuffer,
       contentType: req.file.mimetype
     };
 
@@ -67,6 +64,7 @@ router.post("/fileupload", isLoggedIn, upload.single("image"), async function(re
     res.status(500).send("Error uploading image: " + error.message);
   }
 });
+
 
 
 

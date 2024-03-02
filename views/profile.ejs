@@ -19,11 +19,10 @@
                             </div>
                         <% } else { %>
                             <div class="w-32 h-32 border-2 bg-zinc-200 rounded-full overflow-hidden">
-                                <a href="data:<%= user.profileImage.contentType %>;base64,<%= user.profileImage.data.toString('base64') %>" data-lightbox="profile-image">
+                                <a href="#" data-lightbox="profile-image">
                                     <img class="w-full h-full object-cover" src="data:<%= user.profileImage.contentType %>;base64,<%= user.profileImage.data.toString('base64') %>" alt="profile_image">
                                 </a>
-                            </div>
-                            
+                            </div>           
                         <% } %>
                     </div>
                     <h1 class="text-2xl font-semibold mt-2"><%= user.fullname %></h1>
