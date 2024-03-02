@@ -6,24 +6,24 @@
                     <% posts.forEach(function(post){ %>
                         <div class="box">
                             <div class="profile-image">
-                                <% if (!post.user.profileImage){ %>
-                                    <div class="w-8 h-8 border-1 bg-zinc-500 rounded-full overflow-hidden">
+                                <% if (!post.user.profileImage.data){ %>
+                                    <div class="w-32 h-32 border-2 bg-zinc-200 rounded-full overflow-hidden">
                                         <a href=""  data-lightbox="profile-image">
-                                            <img class="w-full h-full object-cover" src="/images/uploads/DefaultUser.jpg" alt="profile_image">
-                                        </a>                                
+                                            <img class="w-full h-full object-cover " src="/images/uploads/DefaultUser.jpg" alt="profile_image">
+                                        </a>
                                     </div>
                                 <% } else { %>
-                                    <div class="w-8 h-8 border-1 bg-zinc-500 rounded-full overflow-hidden">
-                                        <a href="/images/uploads/<%= post.user.profileImage %>"  data-lightbox="profile-image">
-                                            <img class="w-full h-full object-cover" src="/images/uploads/<%= post.user.profileImage %>" alt="profile_image">
-                                        </a>                                
+                                    <div class="w-32 h-32 border-2 bg-zinc-200 rounded-full overflow-hidden">
+                                        <a href="#"  data-lightbox="profile-image">
+                                            <img class="w-full h-full object-cover " src="data:<%= post.user.profileImage.contentType %>;base64,<%= post.user.profileImage.data.toString('base64') %>" alt="profile_image">
+                                        </a>
                                     </div>
                                 <% } %>
                                 <p class="text-base w-44 font-medium opacity-80 text-wrap overflow-hidden"><%= post.user.username %></p>
                             </div>
                             <div class="image relative">
-                                <a href="/images/uploads/<%= post.image %>" data-lightbox="posts" data-title="<%= post.caption %>">
-                                    <img src="/images/uploads/<%= post.image %>" class="mt-2" alt="image">
+                                <a href="data:<%= post.image.contentType %>;base64,<%= post.image.data.toString('base64') %>" data-lightbox="posts" data-title="<%= post.caption %>">
+                                    <img src="data:<%= post.image.contentType %>;base64,<%= post.image.data.toString('base64') %>" class="mt-2" alt="image">
                                 </a>  
                             </div>  
                             <div class="flex justify-between">
