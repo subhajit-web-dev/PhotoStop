@@ -37,36 +37,11 @@ router.get("/feed", isLoggedIn, async function(req, res){
 });
 
 router.post("/fileupload", isLoggedIn, upload.single("image"), async function(req, res){
-  try {
-    // Check if a file was successfully uploaded
-    if (!req.file) {
-      throw new Error("No file uploaded");
-    }
-
-    // Find the user who is uploading the image
-    const user = await userModel.findOne({ username: req.session.passport.user });
-
-    // Access the uploaded image data from req.file.buffer
-    const imageBuffer = req.file.buffer;
-
-    // Update the user's profile image with the image buffer and content type
-    user.profileImage = {
-      data: imageBuffer,
-      contentType: req.file.mimetype
-    };
-
-    // Save the updated user object to MongoDB
-    await user.save();
-
-    res.redirect("/profile");
-  } catch (error) {
-    console.error("Error uploading image:", error);
-    res.status(500).send("Error uploading image: " + error.message);
-  }
+  const user = await userModel.findOne({username: req.session.passport.user});
+  user.profileImage = req.file.filename;
+  await user.save();
+  res.redirect("/profile");
 });
-
-
-
 
 router.get("/add", isLoggedIn, async function(req, res){
   const user = await userModel.findOne({username: req.session.passport.user});
@@ -75,25 +50,20 @@ router.get("/add", isLoggedIn, async function(req, res){
 
 router.post("/createpost", isLoggedIn, upload.single("postimage"), async function(req, res){
   try {
-    // Check if a file was successfully uploaded
-    if (!req.file) {
-      throw new Error("No file uploaded");
-    }
-
     // Find the user who is creating the post
     const user = await userModel.findOne({ username: req.session.passport.user });
 
-    // Access the uploaded image data from req.file.buffer
-    const imageData = req.file.buffer;
+    // Read the uploaded image file
+    const imageBuffer = req.file.filename;
+
+    // Convert the image buffer to a Base64 string
+    const imageData = imageBuffer.toString("base64");
 
     // Create a new post document with the user's ID, caption, and image data
     const post = await postModel.create({
       user: user._id,
       caption: req.body.caption,
-      image: {
-        data: imageData,
-        contentType: req.file.mimetype
-      }
+      image: imageData
     });
 
     // Update the user's posts array with the new post ID
@@ -106,10 +76,9 @@ router.post("/createpost", isLoggedIn, upload.single("postimage"), async functio
     res.redirect("/profile");
   } catch (error) {
     console.error("Error creating post:", error);
-    res.status(500).send("Error creating post: " + error.message);
+    res.status(500).send("Error creating post");
   }
 });
-
 
 
 router.get("/edit", isLoggedIn, async function(req, res){
